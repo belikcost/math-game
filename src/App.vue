@@ -7,20 +7,19 @@
     :onEndTheGame="endTheGame"
     :settings="settings"
     :timer="timer"
-    :onChangeSettings="onChangeSettings"
+    :onChangeSettings="changeSettings"
     :onCreateTask="createTask"
   />
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, Ref, ref, watch } from "vue";
 import { OperationsEnums } from "@/enums";
 import { SettingsInterface, TaskInterface } from "@/types";
+import StorageHelper from "@/domain/StorageHelper";
 
 interface AppStateInterface {
-  settings: SettingsInterface;
   tasks: TaskInterface[];
-  previousTasks: TaskInterface[];
   timer: number;
   timerInterval: number | undefined;
 }
@@ -35,9 +34,7 @@ export default defineComponent({
   name: "App",
   data(): AppStateInterface {
     return {
-      settings: this.getInitialSettings(),
       tasks: [],
-      previousTasks: this.getInitialPreviousTasks(),
       timer: 0,
       timerInterval: undefined,
     };
@@ -123,9 +120,6 @@ export default defineComponent({
 
       return result;
     },
-    onChangeSettings(settings: SettingsInterface) {
-      this.$data.settings = settings;
-    },
     startTheGame() {
       this.$data.timer = this.getSecondsFromMinutes(this.settings.duration);
 
@@ -149,48 +143,17 @@ export default defineComponent({
       this.$data.timerInterval = setInterval(updateTimer, ONE_SECOND);
     },
     endTheGame() {
-      this.$data.previousTasks = this.tasks;
-      localStorage.setItem("previousTasks", JSON.stringify(this.tasks));
+      this.setPreviousTasks(this.tasks);
+      this.storageHelper.setToStorage(
+        "previousTasks",
+        JSON.stringify(this.tasks)
+      );
 
       this.$data.tasks = [];
       this.$data.timer = 0;
       clearInterval(this.timerInterval);
 
       this.$router.push("/start");
-    },
-    getInitialPreviousTasks() {
-      let previousTasks;
-
-      const fromStorage = localStorage.getItem("previousTasks");
-
-      try {
-        if (fromStorage) {
-          previousTasks = JSON.parse(fromStorage);
-        } else {
-          previousTasks = [];
-        }
-      } catch (e) {
-        previousTasks = [];
-      }
-
-      return previousTasks;
-    },
-    getInitialSettings() {
-      let settings;
-
-      const fromStorage = localStorage.getItem("settings");
-
-      try {
-        if (fromStorage) {
-          settings = JSON.parse(fromStorage);
-        } else {
-          settings = INITIAL_SETTINGS;
-        }
-      } catch (e) {
-        settings = INITIAL_SETTINGS;
-      }
-
-      return settings;
     },
   },
   watch: {
@@ -199,9 +162,46 @@ export default defineComponent({
         this.$router.push("/");
       }
     },
-    settings(nextValue) {
-      localStorage.setItem("settings", JSON.stringify(nextValue));
-    },
+  },
+  setup() {
+    const storageHelper = new StorageHelper(localStorage);
+    const settingsFromStorage =
+      storageHelper.getFromStorageAndParse("settings");
+
+    const settings: Ref<SettingsInterface> = ref(
+      settingsFromStorage || INITIAL_SETTINGS
+    );
+
+    const changeSettings = (changedSettings: SettingsInterface) => {
+      settings.value = changedSettings;
+    };
+
+    watch(
+      () => ({ ...settings.value }),
+      (nextValue) => {
+        storageHelper.setToStorage("settings", JSON.stringify(nextValue));
+      },
+      { deep: true }
+    );
+
+    const previousTasksFromStorage =
+      storageHelper.getFromStorageAndParse("previousTasks");
+
+    const previousTasks: Ref<TaskInterface[]> = ref(
+      previousTasksFromStorage || []
+    );
+
+    const setPreviousTasks = (tasks: TaskInterface[]) => {
+      previousTasks.value = tasks;
+    };
+
+    return {
+      storageHelper,
+      settings,
+      changeSettings,
+      previousTasks,
+      setPreviousTasks,
+    };
   },
 });
 </script>
