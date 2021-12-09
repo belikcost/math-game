@@ -51,7 +51,8 @@ export default defineComponent({
         operations.forEach((operation) => {
           task.operations.push({
             type: operation,
-            value: this.generateRandomValue(Math.random, Math.floor),
+            correctValue: this.generateRandomValue(Math.random, Math.floor),
+            value: null,
           });
         });
       }
@@ -106,9 +107,9 @@ export default defineComponent({
       let result = firstNumber;
 
       operations.forEach((operation) => {
-        const value = operation.value as number;
+        const correctValue = operation.correctValue as number;
 
-        result = this.getOperationResult(result, value, operation.type);
+        result = this.getOperationResult(result, correctValue, operation.type);
       });
 
       return result;

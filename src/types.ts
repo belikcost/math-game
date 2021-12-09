@@ -8,6 +8,7 @@ interface ResultInterface {
 
 interface OperationInterface {
   type: OperationsEnums;
+  correctValue: number | null;
   value: number | null;
 }
 
@@ -23,4 +24,9 @@ interface SettingsInterface {
   operations: OperationsEnums[];
 }
 
-export type { ResultInterface, TaskInterface, SettingsInterface };
+export type {
+  ResultInterface,
+  TaskInterface,
+  SettingsInterface,
+  OperationInterface,
+};
