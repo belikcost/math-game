@@ -18,6 +18,7 @@
     :onFocusPrevOperation="focusPrevOperation"
     :onUpdateFocusOperationValue="updateFocusOperationValue"
     :onCheckTaskAnswers="checkTaskAnswersAndResetFocus"
+    :onFillOperationsWithCorrectValues="fillOperationsWithCorrectValues"
   />
 </template>
 
@@ -91,6 +92,13 @@ export default defineComponent({
     checkTaskAnswersAndResetFocus() {
       this.onCheckTaskAnswers();
       this.$data.focusedOperation = DEFAULT_FOCUSED_OPERATION;
+    },
+    fillOperationsWithCorrectValues() {
+      const operationsWithCorrectValues = this.task.operations.map(
+        (operation) => ({ ...operation, value: operation.correctValue })
+      );
+
+      this.onChangeOperations(operationsWithCorrectValues);
     },
   },
 });
