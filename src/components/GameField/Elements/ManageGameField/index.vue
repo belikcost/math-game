@@ -8,6 +8,8 @@
     >
       {{ index }}
     </div>
+    <div class="manage-game-field_item" @click="onFocusPrevOperation">&lt;</div>
+    <div class="manage-game-field_item" @click="onFocusNextOperation">&gt;</div>
   </div>
 </template>
 
@@ -19,6 +21,14 @@ export default defineComponent({
   props: {
     onUpdateFocusOperationValue: {
       type: Function as PropType<(number: number) => void>,
+      required: true,
+    },
+    onFocusNextOperation: {
+      type: Function as PropType<() => void>,
+      required: true,
+    },
+    onFocusPrevOperation: {
+      type: Function as PropType<() => void>,
       required: true,
     },
   },

@@ -132,6 +132,7 @@ export default defineComponent({
           (this.$data.timer as number)--;
         } else {
           clearInterval(interval);
+          this.$router.push("/start");
         }
       };
 

@@ -3,14 +3,13 @@
   <input
     class="game-field_input"
     type="number"
-    ref="inputRef"
     disabled="disabled"
     :value="operation.value"
   />
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref } from "vue";
+import { defineComponent, PropType } from "vue";
 import { OperationInterface } from "@/types";
 
 export default defineComponent({
@@ -29,16 +28,17 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
-    const inputRef = ref(null);
-
-    onMounted(() => {
-      const input = inputRef.value;
-
-      if (input && props.isFocusing) {
-        (input as HTMLInputElement).focus();
-      }
-    });
-  },
 });
 </script>
+
+<style scoped>
+.game-field_input {
+  width: 20px;
+}
+
+.game-field_input::-webkit-outer-spin-button,
+.game-field_input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+</style>

@@ -1,6 +1,9 @@
 <template>
   <div v-if="timer">
-    <h1>The Game!</h1>
+    <header class="game__header">
+      <h1>The Game!</h1>
+      <Timer :timer="timer" />
+    </header>
     <GameField
       :task="currentTask"
       :onChangeOperations="onChangeCurrentTaskOperations"
@@ -12,11 +15,13 @@
 import { defineComponent, PropType } from "vue";
 import { SettingsInterface, TaskInterface } from "@/types";
 import GameField from "@/components/GameField/index.vue";
+import Timer from "@/components/Timer/index.vue";
 
 export default defineComponent({
   name: "Game",
   components: {
     GameField,
+    Timer,
   },
   created() {
     if (!this.timer) {
@@ -53,3 +58,11 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+.game__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+</style>

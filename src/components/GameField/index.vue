@@ -13,7 +13,11 @@
     </template>
     <span>= {{ task.answer }}</span>
   </div>
-  <ManageGameField :onUpdateFocusOperationValue="updateFocusOperationValue" />
+  <ManageGameField
+    :onFocusNextOperation="focusNextOperation"
+    :onFocusPrevOperation="focusPrevOperation"
+    :onUpdateFocusOperationValue="updateFocusOperationValue"
+  />
 </template>
 
 <script lang="ts">
@@ -67,18 +71,16 @@ export default defineComponent({
       console.log(changedOperations);
       this.onChangeOperations(changedOperations);
     },
+    focusNextOperation() {
+      if (this.focusedOperation !== this.task.operations.length - 1) {
+        this.$data.focusedOperation = this.focusedOperation + 1;
+      }
+    },
+    focusPrevOperation() {
+      if (this.focusedOperation !== 0) {
+        this.$data.focusedOperation = this.focusedOperation - 1;
+      }
+    },
   },
 });
 </script>
-
-<style scoped>
-.game-field_input {
-  width: 20px;
-}
-
-.game-field_input::-webkit-outer-spin-button,
-.game-field_input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-</style>
