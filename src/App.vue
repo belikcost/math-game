@@ -25,15 +25,17 @@ interface AppStateInterface {
   timerInterval: number | undefined;
 }
 
+const INITIAL_SETTINGS = {
+  duration: 5,
+  level: 2,
+  operations: [OperationsEnums.addition, OperationsEnums.division],
+};
+
 export default defineComponent({
   name: "App",
   data(): AppStateInterface {
     return {
-      settings: {
-        duration: 5,
-        level: 2,
-        operations: [OperationsEnums.addition, OperationsEnums.division],
-      },
+      settings: this.getInitialSettings(),
       tasks: [],
       previousTasks: this.getInitialPreviousTasks(),
       timer: 0,
@@ -173,12 +175,32 @@ export default defineComponent({
 
       return previousTasks;
     },
+    getInitialSettings() {
+      let settings;
+
+      const fromStorage = localStorage.getItem("settings");
+
+      try {
+        if (fromStorage) {
+          settings = JSON.parse(fromStorage);
+        } else {
+          settings = INITIAL_SETTINGS;
+        }
+      } catch (e) {
+        settings = INITIAL_SETTINGS;
+      }
+
+      return settings;
+    },
   },
   watch: {
-    timer() {
-      if (this.timer) {
+    timer(nextValue) {
+      if (nextValue) {
         this.$router.push("/");
       }
+    },
+    settings(nextValue) {
+      localStorage.setItem("settings", JSON.stringify(nextValue));
     },
   },
 });
