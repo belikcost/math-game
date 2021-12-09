@@ -17,6 +17,7 @@
     :onFocusNextOperation="focusNextOperation"
     :onFocusPrevOperation="focusPrevOperation"
     :onUpdateFocusOperationValue="updateFocusOperationValue"
+    :onCheckTaskAnswers="checkTaskAnswersAndResetFocus"
   />
 </template>
 
@@ -27,6 +28,8 @@ import { getOperationByType } from "@/utils";
 import Operation from "@/components/GameField/Elements/Operation/index.vue";
 import ManageGameField from "@/components/GameField/Elements/ManageGameField/index.vue";
 
+const DEFAULT_FOCUSED_OPERATION = 0;
+
 export default defineComponent({
   name: "GameField",
   components: {
@@ -35,7 +38,7 @@ export default defineComponent({
   },
   data() {
     return {
-      focusedOperation: 0,
+      focusedOperation: DEFAULT_FOCUSED_OPERATION,
     };
   },
   props: {
@@ -47,6 +50,10 @@ export default defineComponent({
       type: Function as PropType<
         (operations: TaskInterface["operations"]) => void
       >,
+      required: true,
+    },
+    onCheckTaskAnswers: {
+      type: Function as PropType<() => void>,
       required: true,
     },
   },
@@ -68,7 +75,7 @@ export default defineComponent({
           return operation;
         }
       });
-      console.log(changedOperations);
+
       this.onChangeOperations(changedOperations);
     },
     focusNextOperation() {
@@ -80,6 +87,10 @@ export default defineComponent({
       if (this.focusedOperation !== 0) {
         this.$data.focusedOperation = this.focusedOperation - 1;
       }
+    },
+    checkTaskAnswersAndResetFocus() {
+      this.onCheckTaskAnswers();
+      this.$data.focusedOperation = DEFAULT_FOCUSED_OPERATION;
     },
   },
 });

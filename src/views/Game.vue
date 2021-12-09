@@ -1,13 +1,20 @@
 <template>
-  <div v-if="timer">
-    <header class="game__header">
-      <h1>The Game!</h1>
-      <Timer :timer="timer" />
-    </header>
-    <GameField
-      :task="currentTask"
-      :onChangeOperations="onChangeCurrentTaskOperations"
-    />
+  <div>
+    <div v-if="timer">
+      <header class="game__header">
+        <h1>The Game!</h1>
+        <Timer :timer="timer" />
+      </header>
+      <GameField
+        :task="currentTask"
+        :onChangeOperations="onChangeTaskOperations"
+        :onCheckTaskAnswers="checkTaskAnswers"
+      />
+    </div>
+    <Modal v-if="modal.active">
+      {{ modal.text }}
+      <button @click="hideModalAndCreateTask">Далее</button>
+    </Modal>
   </div>
 </template>
 
@@ -16,12 +23,22 @@ import { defineComponent, PropType } from "vue";
 import { SettingsInterface, TaskInterface } from "@/types";
 import GameField from "@/components/GameField/index.vue";
 import Timer from "@/components/Timer/index.vue";
+import Modal from "@/primitives/Modal/index.vue";
 
 export default defineComponent({
   name: "Game",
   components: {
     GameField,
     Timer,
+    Modal,
+  },
+  data() {
+    return {
+      modal: {
+        active: false,
+        text: "",
+      },
+    };
   },
   created() {
     if (!this.timer) {
@@ -45,6 +62,10 @@ export default defineComponent({
       type: Function as PropType<(changedTasks: TaskInterface) => void>,
       required: true,
     },
+    onCreateTask: {
+      type: Function as PropType<() => void>,
+      required: true,
+    },
   },
   computed: {
     currentTask() {
@@ -52,8 +73,27 @@ export default defineComponent({
     },
   },
   methods: {
-    onChangeCurrentTaskOperations(operations: TaskInterface["operations"]) {
+    onChangeTaskOperations(operations: TaskInterface["operations"]) {
       this.onChangeCurrentTask({ ...this.currentTask, operations });
+    },
+    checkTaskAnswers() {
+      const checkAnswersResult = this.currentTask.operations.every(
+        (operation) => operation.value === operation.correctValue
+      );
+
+      let modalText = "";
+
+      if (checkAnswersResult) {
+        modalText = "Ответ верный";
+      } else {
+        modalText = "Ответ неверный";
+      }
+
+      this.$data.modal = { active: true, text: modalText };
+    },
+    hideModalAndCreateTask() {
+      this.$data.modal.active = false;
+      this.onCreateTask();
     },
   },
 });

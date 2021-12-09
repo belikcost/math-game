@@ -1,11 +1,13 @@
 <template>
   <router-view
     :tasks="tasks"
+    :previousTasks="previousTasks"
     :onChangeCurrentTask="onChangeCurrentTask"
     :onStartTheGame="startTheGame"
     :settings="settings"
     :timer="timer"
     :onChangeSettings="onChangeSettings"
+    :onCreateTask="createTask"
   />
 </template>
 
@@ -17,6 +19,7 @@ import { SettingsInterface, TaskInterface } from "@/types";
 interface AppStateInterface {
   settings: SettingsInterface;
   tasks: TaskInterface[];
+  previousTasks: TaskInterface[];
   timer: number;
 }
 
@@ -30,6 +33,7 @@ export default defineComponent({
         operations: [OperationsEnums.addition, OperationsEnums.division],
       },
       tasks: [],
+      previousTasks: this.getInitialPreviousTasks(),
       timer: 0,
     };
   },
@@ -132,12 +136,37 @@ export default defineComponent({
           (this.$data.timer as number)--;
         } else {
           clearInterval(interval);
-          this.$router.push("/start");
+          this.endTheGame();
         }
       };
 
       const ONE_SECOND = 1000;
       const interval = setInterval(updateTimer, ONE_SECOND);
+    },
+    endTheGame() {
+      this.$data.previousTasks = this.tasks;
+      localStorage.setItem("previousTasks", JSON.stringify(this.tasks));
+
+      this.$data.tasks = [];
+
+      this.$router.push("/start");
+    },
+    getInitialPreviousTasks() {
+      let previousTasks;
+
+      const fromStorage = localStorage.getItem("previousTasks");
+
+      try {
+        if (fromStorage) {
+          previousTasks = JSON.parse(fromStorage);
+        } else {
+          previousTasks = [];
+        }
+      } catch (e) {
+        previousTasks = [];
+      }
+
+      return previousTasks;
     },
   },
   watch: {
