@@ -51,7 +51,7 @@ export default defineComponent({
   justify-content: space-around;
 
   width: 500px;
-  margin: 50px auto 0;
+  margin: 50px auto;
 }
 
 .manage-game-field_item {

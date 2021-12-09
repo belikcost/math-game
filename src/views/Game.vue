@@ -10,6 +10,7 @@
         :onChangeOperations="onChangeTaskOperations"
         :onCheckTaskAnswers="checkTaskAnswers"
       />
+      <button @click="onEndTheGame">Отмена</button>
     </div>
     <Modal v-if="modal.active">
       {{ modal.text }}
@@ -63,6 +64,10 @@ export default defineComponent({
       required: true,
     },
     onCreateTask: {
+      type: Function as PropType<() => void>,
+      required: true,
+    },
+    onEndTheGame: {
       type: Function as PropType<() => void>,
       required: true,
     },

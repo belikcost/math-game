@@ -4,6 +4,7 @@
     :previousTasks="previousTasks"
     :onChangeCurrentTask="onChangeCurrentTask"
     :onStartTheGame="startTheGame"
+    :onEndTheGame="endTheGame"
     :settings="settings"
     :timer="timer"
     :onChangeSettings="onChangeSettings"
@@ -21,6 +22,7 @@ interface AppStateInterface {
   tasks: TaskInterface[];
   previousTasks: TaskInterface[];
   timer: number;
+  timerInterval: number | undefined;
 }
 
 export default defineComponent({
@@ -35,6 +37,7 @@ export default defineComponent({
       tasks: [],
       previousTasks: this.getInitialPreviousTasks(),
       timer: 0,
+      timerInterval: undefined,
     };
   },
   methods: {
@@ -135,19 +138,21 @@ export default defineComponent({
         if (this.timer && this.timer > 0) {
           (this.$data.timer as number)--;
         } else {
-          clearInterval(interval);
+          clearInterval(this.timerInterval);
           this.endTheGame();
         }
       };
 
       const ONE_SECOND = 1000;
-      const interval = setInterval(updateTimer, ONE_SECOND);
+      this.$data.timerInterval = setInterval(updateTimer, ONE_SECOND);
     },
     endTheGame() {
       this.$data.previousTasks = this.tasks;
       localStorage.setItem("previousTasks", JSON.stringify(this.tasks));
 
       this.$data.tasks = [];
+      this.$data.timer = 0;
+      clearInterval(this.timerInterval);
 
       this.$router.push("/start");
     },
