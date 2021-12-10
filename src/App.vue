@@ -29,7 +29,7 @@ interface AppStateInterface {
   timer: number;
   timerInterval: number | undefined;
 }
-
+const ONE_SECOND = 1000;
 const INITIAL_SETTINGS = {
   duration: 5,
   level: 2,
@@ -75,7 +75,6 @@ export default defineComponent({
         }
       };
 
-      const ONE_SECOND = 1000;
       this.$data.timerInterval = setInterval(updateTimer, ONE_SECOND);
     },
     createTask() {
