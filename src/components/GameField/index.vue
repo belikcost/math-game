@@ -6,9 +6,12 @@
       :key="operation.type"
     >
       <Operation
+        :operationIdentifier="index"
         :isFocusing="index === focusedOperation"
         :operation="operation"
         :operationName="getOperationByType(operation.type)"
+        :onChangeFocusOperationValue="changeFocusOperationValue"
+        :onSetFocusedOperation="setFocusedOperation"
       />
     </template>
     <span>= {{ task.answer }}</span>
@@ -60,18 +63,22 @@ export default defineComponent({
   },
   methods: {
     getOperationByType,
+    setFocusedOperation(focusedOperation: number) {
+      this.$data.focusedOperation = focusedOperation;
+    },
     updateFocusOperationValue(number: number) {
+      const focusedOperationValue = this.task.operations[this.focusedOperation].value;
+
+      if (focusedOperationValue !== null) {
+        this.changeFocusOperationValue(+`${focusedOperationValue}${number}`);
+      } else {
+        this.changeFocusOperationValue(number);
+      }
+    },
+    changeFocusOperationValue(value: number) {
       const changedOperations = this.task.operations.map((operation, i) => {
         if (i === this.focusedOperation) {
-          let updatedValue;
-
-          if (operation.value !== null) {
-            updatedValue = +`${operation.value}${number}`;
-          } else {
-            updatedValue = number;
-          }
-
-          return { ...operation, value: updatedValue };
+          return { ...operation, value };
         } else {
           return operation;
         }

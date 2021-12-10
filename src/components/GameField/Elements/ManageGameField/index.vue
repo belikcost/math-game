@@ -58,7 +58,8 @@ export default defineComponent({
 <style scoped>
 .manage-game-field {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  flex-wrap: wrap;
 
   width: 500px;
   margin: 50px auto;
@@ -72,8 +73,10 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
 
-  width: 30px;
-  height: 30px;
+  width: 50px;
+  height: 50px;
+
+  margin: 10px 20px;
 
   background-color: darkred;
   color: #fff;

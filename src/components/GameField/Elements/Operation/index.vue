@@ -3,8 +3,10 @@
   <input
     class="game-field_input"
     type="number"
-    disabled="disabled"
+    ref="input"
     :value="operation.value"
+    @input="(e) => onChangeFocusOperationValue(+e.target.value)"
+    @focus="onFocus"
   />
 </template>
 
@@ -23,9 +25,42 @@ export default defineComponent({
       type: String as PropType<string>,
       required: true,
     },
+    operationIdentifier: {
+      type: Number as PropType<number>,
+      required: true,
+    },
     isFocusing: {
       type: Boolean as PropType<boolean>,
       required: true,
+    },
+    onChangeFocusOperationValue: {
+      type: Function as PropType<(value: number) => void>,
+      required: true,
+    },
+    onSetFocusedOperation: {
+      type: Function as PropType<(focusedOperation: number) => void>,
+      required: true,
+    },
+  },
+  methods: {
+    onFocus() {
+      this.onSetFocusedOperation(this.operationIdentifier);
+    },
+    focusOperationInput() {
+      const input = this.$refs.input as HTMLInputElement;
+      input.focus();
+    },
+  },
+  mounted() {
+    if (this.isFocusing) {
+      this.focusOperationInput();
+    }
+  },
+  watch: {
+    isFocusing(value) {
+      if (value) {
+        this.focusOperationInput();
+      }
     },
   },
 });
