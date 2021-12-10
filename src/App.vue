@@ -19,11 +19,11 @@ import { OperationsEnums } from "@/enums";
 import { SettingsInterface, TaskInterface } from "@/types";
 import StorageHelper from "@/domain/StorageHelper";
 import {
-  calculateAnswer,
   generateRandomValue,
   getSecondsFromMinutes,
   sortOperationsByLogic,
 } from "./utils";
+import TaskFunctional from "@/domain/TaskFunctional";
 
 interface AppStateInterface {
   tasks: TaskInterface[];
@@ -104,7 +104,8 @@ export default defineComponent({
 
       task.operations = sortOperationsByLogic(task.operations);
 
-      task.answer = calculateAnswer(task.firstNumber, task.operations);
+      const taskFunctional = new TaskFunctional(task);
+      task.answer = taskFunctional.calculateAnswer();
 
       this.$data.tasks.push(task);
     },

@@ -56,6 +56,11 @@ export default defineComponent({
       this.focusOperationInput();
     }
   },
+  updated() {
+    if (this.isFocusing) {
+      this.focusOperationInput();
+    }
+  },
   watch: {
     isFocusing(value) {
       if (value) {

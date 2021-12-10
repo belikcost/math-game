@@ -8,7 +8,7 @@
       <GameField
         :task="currentTask"
         :onChangeOperations="onChangeTaskOperations"
-        :onCheckTaskAnswers="checkTaskAnswers"
+        :onShowTaskResult="showTaskResult"
         :onShowCorrectTaskAnswers="showCorrectTaskAnswers"
       />
       <button @click="onEndTheGame">Отмена</button>
@@ -21,11 +21,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType } from "vue";
 import { SettingsInterface, TaskInterface } from "@/types";
 import GameField from "@/components/GameField/index.vue";
 import Timer from "@/components/Timer/index.vue";
 import Modal from "@/primitives/Modal/index.vue";
+import TaskFunctional from "@/domain/TaskFunctional";
 
 export default defineComponent({
   name: "Game",
@@ -77,23 +78,14 @@ export default defineComponent({
       required: true,
     },
   },
-  computed: {
-    currentTask() {
-      return this.tasks[this.tasks.length - 1];
-    },
-  },
   methods: {
     onChangeTaskOperations(operations: TaskInterface["operations"]) {
       this.onChangeCurrentTask({ ...this.currentTask, operations });
     },
-    checkTaskAnswers() {
-      const checkAnswersResult = this.currentTask.operations.every(
-        (operation) => operation.value === operation.correctValue
-      );
-
+    showTaskResult() {
       let modalText = "";
 
-      if (checkAnswersResult) {
+      if (this.taskFunctional.checkAnswers()) {
         modalText = "Ответ верный";
       } else {
         modalText = "Ответ неверный";
@@ -106,17 +98,20 @@ export default defineComponent({
       this.onCreateTask();
     },
     showCorrectTaskAnswers() {
-      const correctAnswers: number[] = [];
-
-      this.currentTask.operations.forEach((operation) => {
-        correctAnswers.push(operation.correctValue);
-      });
+      const correctAnswers = this.taskFunctional.getCorrectAnswers();
 
       this.$data.modal = {
         active: true,
         text: `Ответы: ${correctAnswers.join(" ")}`,
       };
     },
+  },
+  setup(props) {
+    const currentTask = computed(() => props.tasks[props.tasks.length - 1]);
+
+    const taskFunctional = new TaskFunctional(currentTask.value);
+
+    return { currentTask, taskFunctional };
   },
 });
 </script>

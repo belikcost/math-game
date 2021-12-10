@@ -20,7 +20,7 @@
     :onFocusNextOperation="focusNextOperation"
     :onFocusPrevOperation="focusPrevOperation"
     :onUpdateFocusOperationValue="updateFocusOperationValue"
-    :onCheckTaskAnswers="checkTaskAnswersAndResetFocus"
+    :onShowTaskResultAndResetFocus="showTaskResultAndResetFocus"
     :onShowCorrectTaskAnswers="onShowCorrectTaskAnswers"
   />
 </template>
@@ -56,7 +56,7 @@ export default defineComponent({
       >,
       required: true,
     },
-    onCheckTaskAnswers: {
+    onShowTaskResult: {
       type: Function as PropType<() => void>,
       required: true,
     },
@@ -101,8 +101,8 @@ export default defineComponent({
         this.$data.focusedOperation = this.focusedOperation - 1;
       }
     },
-    checkTaskAnswersAndResetFocus() {
-      this.onCheckTaskAnswers();
+    showTaskResultAndResetFocus() {
+      this.onShowTaskResult();
       this.$data.focusedOperation = DEFAULT_FOCUSED_OPERATION;
     },
   },

@@ -39,44 +39,6 @@ const sortOperationsByLogic = (
   });
 };
 
-const getOperationResult = (
-  firstOperand: number,
-  secondOperand: number,
-  operationType: OperationsEnums
-): number => {
-  switch (operationType) {
-    case OperationsEnums.addition:
-      return firstOperand + secondOperand;
-
-    case OperationsEnums.subtraction:
-      return firstOperand - secondOperand;
-
-    case OperationsEnums.multiplication:
-      return firstOperand * secondOperand;
-
-    case OperationsEnums.division:
-      return firstOperand / secondOperand;
-
-    case OperationsEnums.exponentiation:
-      return Math.pow(firstOperand, secondOperand);
-  }
-};
-
-const calculateAnswer = (
-  firstNumber: TaskInterface["firstNumber"],
-  operations: TaskInterface["operations"]
-): number => {
-  let result = firstNumber;
-
-  operations.forEach((operation) => {
-    const correctValue = operation.correctValue as number;
-
-    result = getOperationResult(result, correctValue, operation.type);
-  });
-
-  return result;
-};
-
 const getSecondsFromMinutes = (minutes: number): number => {
   return minutes * 60;
 };
@@ -85,7 +47,5 @@ export {
   getOperationByType,
   generateRandomValue,
   sortOperationsByLogic,
-  getOperationResult,
-  calculateAnswer,
   getSecondsFromMinutes,
 };
