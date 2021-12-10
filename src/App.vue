@@ -7,6 +7,7 @@
     :onEndTheGame="endTheGame"
     :settings="settings"
     :timer="timer"
+    :startTime="startTime"
     :onChangeSettings="changeSettings"
     :onCreateTask="createTask"
   />
@@ -28,6 +29,7 @@ interface AppStateInterface {
   tasks: TaskInterface[];
   timer: number;
   timerInterval: number | undefined;
+  startTime: number;
 }
 const ONE_SECOND = 1000;
 const INITIAL_SETTINGS = {
@@ -43,11 +45,14 @@ export default defineComponent({
       tasks: [],
       timer: 0,
       timerInterval: undefined,
+      startTime: 0,
     };
   },
   methods: {
     startTheGame() {
-      this.$data.timer = getSecondsFromMinutes(this.settings.duration);
+      const startTime = getSecondsFromMinutes(this.settings.duration);
+      this.$data.timer = startTime;
+      this.$data.startTime = startTime;
 
       this.startTimer();
       this.createTask();

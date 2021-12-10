@@ -8,7 +8,7 @@ interface ResultInterface {
 
 interface OperationInterface {
   type: OperationsEnums;
-  correctValue: number | null;
+  correctValue: number;
   value: number | null;
 }
 

@@ -21,7 +21,7 @@
     :onFocusPrevOperation="focusPrevOperation"
     :onUpdateFocusOperationValue="updateFocusOperationValue"
     :onCheckTaskAnswers="checkTaskAnswersAndResetFocus"
-    :onFillOperationsWithCorrectValues="fillOperationsWithCorrectValues"
+    :onShowCorrectTaskAnswers="onShowCorrectTaskAnswers"
   />
 </template>
 
@@ -60,6 +60,10 @@ export default defineComponent({
       type: Function as PropType<() => void>,
       required: true,
     },
+    onShowCorrectTaskAnswers: {
+      type: Function as PropType<() => void>,
+      required: true,
+    },
   },
   methods: {
     getOperationByType,
@@ -67,7 +71,8 @@ export default defineComponent({
       this.$data.focusedOperation = focusedOperation;
     },
     updateFocusOperationValue(number: number) {
-      const focusedOperationValue = this.task.operations[this.focusedOperation].value;
+      const focusedOperationValue =
+        this.task.operations[this.focusedOperation].value;
 
       if (focusedOperationValue !== null) {
         this.changeFocusOperationValue(+`${focusedOperationValue}${number}`);
@@ -99,13 +104,6 @@ export default defineComponent({
     checkTaskAnswersAndResetFocus() {
       this.onCheckTaskAnswers();
       this.$data.focusedOperation = DEFAULT_FOCUSED_OPERATION;
-    },
-    fillOperationsWithCorrectValues() {
-      const operationsWithCorrectValues = this.task.operations.map(
-        (operation) => ({ ...operation, value: operation.correctValue })
-      );
-
-      this.onChangeOperations(operationsWithCorrectValues);
     },
   },
 });

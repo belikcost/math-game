@@ -11,10 +11,7 @@
     <div class="manage-game-field_item" @click="onFocusPrevOperation">&lt;</div>
     <div class="manage-game-field_item" @click="onFocusNextOperation">&gt;</div>
     <div class="manage-game-field_item" @click="onCheckTaskAnswers">=</div>
-    <div
-      class="manage-game-field_item"
-      @click="onFillOperationsWithCorrectValues"
-    >
+    <div class="manage-game-field_item" @click="onShowCorrectTaskAnswers">
       ?
     </div>
   </div>
@@ -42,7 +39,7 @@ export default defineComponent({
       type: Function as PropType<() => void>,
       required: true,
     },
-    onFillOperationsWithCorrectValues: {
+    onShowCorrectTaskAnswers: {
       type: Function as PropType<() => void>,
       required: true,
     },

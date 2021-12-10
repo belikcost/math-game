@@ -3,12 +3,13 @@
     <div v-if="timer">
       <header class="game__header">
         <h1>The Game!</h1>
-        <Timer :timer="timer" />
+        <Timer :timer="timer" :startTime="startTime" />
       </header>
       <GameField
         :task="currentTask"
         :onChangeOperations="onChangeTaskOperations"
         :onCheckTaskAnswers="checkTaskAnswers"
+        :onShowCorrectTaskAnswers="showCorrectTaskAnswers"
       />
       <button @click="onEndTheGame">Отмена</button>
     </div>
@@ -52,6 +53,10 @@ export default defineComponent({
       required: true,
     },
     timer: {
+      type: Number as PropType<number>,
+      required: true,
+    },
+    startTime: {
       type: Number as PropType<number>,
       required: true,
     },
@@ -99,6 +104,18 @@ export default defineComponent({
     hideModalAndCreateTask() {
       this.$data.modal.active = false;
       this.onCreateTask();
+    },
+    showCorrectTaskAnswers() {
+      const correctAnswers: number[] = [];
+
+      this.currentTask.operations.forEach((operation) => {
+        correctAnswers.push(operation.correctValue);
+      });
+
+      this.$data.modal = {
+        active: true,
+        text: `Ответы: ${correctAnswers.join(" ")}`,
+      };
     },
   },
 });
