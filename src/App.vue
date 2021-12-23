@@ -6,7 +6,7 @@
     :onStartTheGame="startTheGame"
     :onEndTheGame="endTheGame"
     :settings="settings"
-    :timer="timer"
+    :timer="timerTime"
     :startTime="startTime"
     :onChangeSettings="changeSettings"
     :onCreateTask="createTask"
@@ -24,13 +24,15 @@ import {
   sortOperationsByLogic,
 } from "./utils";
 import TaskFunctional from "@/domain/TaskFunctional";
+import Timer from "@/domain/Timer";
 
 interface AppStateInterface {
   tasks: TaskInterface[];
-  timer: number;
-  timerInterval: number | undefined;
+  timerTime: number;
   startTime: number;
+  timer: Timer | null;
 }
+
 const ONE_SECOND = 1000;
 const INITIAL_SETTINGS = {
   duration: 5,
@@ -43,18 +45,27 @@ export default defineComponent({
   data(): AppStateInterface {
     return {
       tasks: [],
-      timer: 0,
-      timerInterval: undefined,
+      timer: null,
+      timerTime: 0,
       startTime: 0,
     };
   },
   methods: {
     startTheGame() {
       const startTime = getSecondsFromMinutes(this.settings.duration);
-      this.$data.timer = startTime;
+
+      const timer = new Timer({
+        startTime,
+        interval: ONE_SECOND,
+        onTimerEnd: this.endTheGame,
+        onTick: (nextTime) => (this.$data.timerTime = nextTime),
+      });
+
+      this.$data.timer = timer;
+      this.$data.timerTime = timer.time;
       this.$data.startTime = startTime;
 
-      this.startTimer();
+      timer.start();
       this.createTask();
     },
     endTheGame() {
@@ -64,23 +75,12 @@ export default defineComponent({
         JSON.stringify(this.tasks)
       );
 
+      if (this.timer) this.timer.end();
+
       this.$data.tasks = [];
-      this.$data.timer = 0;
-      clearInterval(this.timerInterval);
+      this.$data.timerTime = 0;
 
       this.$router.push("/start");
-    },
-    startTimer() {
-      const updateTimer = () => {
-        if (this.timer && this.timer > 0) {
-          (this.$data.timer as number)--;
-        } else {
-          clearInterval(this.timerInterval);
-          this.endTheGame();
-        }
-      };
-
-      this.$data.timerInterval = setInterval(updateTimer, ONE_SECOND);
     },
     createTask() {
       const operations = this.settings.operations;
@@ -114,7 +114,7 @@ export default defineComponent({
     },
   },
   watch: {
-    timer(nextValue) {
+    timerTime(nextValue) {
       if (nextValue) {
         this.$router.push("/");
       }

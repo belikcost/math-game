@@ -24,16 +24,9 @@ interface SettingsInterface {
   operations: OperationsEnums[];
 }
 
-interface ModalInterface {
-  active: boolean;
-  text: string;
-  callback: () => void;
-}
-
 export type {
   ResultInterface,
   TaskInterface,
   SettingsInterface,
   OperationInterface,
-  ModalInterface,
 };
