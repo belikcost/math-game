@@ -21,8 +21,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "vue";
-import { SettingsInterface, TaskInterface } from "@/types";
+import { computed, defineComponent, PropType, ref, watch } from "vue";
+import { TaskInterface } from "@/types";
 import GameField from "@/components/GameField/index.vue";
 import Timer from "@/components/Timer/index.vue";
 import Modal from "@/primitives/Modal/index.vue";
@@ -49,10 +49,6 @@ export default defineComponent({
     }
   },
   props: {
-    settings: {
-      type: Object as PropType<SettingsInterface>,
-      required: true,
-    },
     timer: {
       type: Number as PropType<number>,
       required: true,
@@ -109,7 +105,11 @@ export default defineComponent({
   setup(props) {
     const currentTask = computed(() => props.tasks[props.tasks.length - 1]);
 
-    const taskFunctional = new TaskFunctional(currentTask.value);
+    const taskFunctional = ref(new TaskFunctional(currentTask.value));
+
+    watch(currentTask, (nextTask) => {
+      taskFunctional.value = new TaskFunctional(nextTask);
+    });
 
     return { currentTask, taskFunctional };
   },

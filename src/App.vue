@@ -5,26 +5,25 @@
     :onChangeCurrentTask="onChangeCurrentTask"
     :onStartTheGame="startTheGame"
     :onEndTheGame="endTheGame"
-    :settings="settings"
+    :settingsStore="settingsStore"
     :timer="timerTime"
     :startTime="startTime"
-    :onChangeSettings="changeSettings"
     :onCreateTask="createTask"
   />
 </template>
 
 <script lang="ts">
 import { defineComponent, Ref, ref, watch } from "vue";
+
 import { OperationsEnums } from "@/enums";
-import { SettingsInterface, TaskInterface } from "@/types";
+
 import StorageHelper from "@/domain/StorageHelper";
-import {
-  generateRandomValue,
-  getSecondsFromMinutes,
-  sortOperationsByLogic,
-} from "./utils";
 import TaskFunctional from "@/domain/TaskFunctional";
 import Timer from "@/domain/Timer";
+
+import { getSecondsFromMinutes } from "./utils";
+import SettingsStore from "@/domain/SettingsStore";
+import { TaskInterface } from "@/types";
 
 interface AppStateInterface {
   tasks: TaskInterface[];
@@ -52,7 +51,9 @@ export default defineComponent({
   },
   methods: {
     startTheGame() {
-      const startTime = getSecondsFromMinutes(this.settings.duration);
+      const startTime = getSecondsFromMinutes(
+        this.settingsStore.settings.duration
+      );
 
       const timer = new Timer({
         startTime,
@@ -83,31 +84,13 @@ export default defineComponent({
       this.$router.push("/start");
     },
     createTask() {
-      const operations = this.settings.operations;
-      const level = this.settings.level;
+      const taskFunctional = new TaskFunctional(
+        undefined,
+        this.settingsStore.settings.operations,
+        this.settingsStore.settings.level
+      );
 
-      const task: TaskInterface = {
-        firstNumber: generateRandomValue(Math.random, Math.floor),
-        operations: [],
-        answer: null,
-      };
-
-      while (task.operations.length < level) {
-        operations.forEach((operation) => {
-          task.operations.push({
-            type: operation,
-            correctValue: generateRandomValue(Math.random, Math.floor),
-            value: null,
-          });
-        });
-      }
-
-      task.operations = sortOperationsByLogic(task.operations);
-
-      const taskFunctional = new TaskFunctional(task);
-      task.answer = taskFunctional.calculateAnswer();
-
-      this.$data.tasks.push(task);
+      this.$data.tasks.push(taskFunctional.task);
     },
     onChangeCurrentTask(changedTask: TaskInterface) {
       this.$data.tasks[this.tasks.length - 1] = changedTask;
@@ -125,16 +108,12 @@ export default defineComponent({
     const settingsFromStorage =
       storageHelper.getFromStorageAndParse("settings");
 
-    const settings: Ref<SettingsInterface> = ref(
-      settingsFromStorage || INITIAL_SETTINGS
+    const settingsStore: Ref<SettingsStore> = ref(
+      new SettingsStore(settingsFromStorage || INITIAL_SETTINGS)
     );
 
-    const changeSettings = (changedSettings: SettingsInterface) => {
-      settings.value = changedSettings;
-    };
-
     watch(
-      () => ({ ...settings.value }),
+      () => ({ ...settingsStore.value.settings }),
       (nextValue) => {
         storageHelper.setToStorage("settings", JSON.stringify(nextValue));
       },
@@ -154,8 +133,7 @@ export default defineComponent({
 
     return {
       storageHelper,
-      settings,
-      changeSettings,
+      settingsStore,
       previousTasks,
       setPreviousTasks,
     };

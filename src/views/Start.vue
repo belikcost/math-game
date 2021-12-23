@@ -1,7 +1,7 @@
 <template>
   <div>
     <Greeting :previousResult="previousResult" />
-    <Settings :settings="settings" :onChangeSettings="onChangeSettings" />
+    <Settings :settingsStore="settingsStore" />
     <button @click="onStartTheGame">Play!</button>
   </div>
 </template>
@@ -10,7 +10,8 @@
 import { defineComponent, PropType } from "vue";
 import Greeting from "@/components/Greeting/index.vue";
 import Settings from "@/components/Settings/index.vue";
-import { SettingsInterface, TaskInterface } from "@/types";
+import { TaskInterface } from "@/types";
+import SettingsStore from "@/domain/SettingsStore";
 
 export default defineComponent({
   name: "Start",
@@ -19,12 +20,8 @@ export default defineComponent({
     Settings,
   },
   props: {
-    settings: {
-      type: Object as PropType<SettingsInterface>,
-      required: true,
-    },
-    onChangeSettings: {
-      type: Function as PropType<(settings: SettingsInterface) => void>,
+    settingsStore: {
+      type: Object as PropType<SettingsStore>,
       required: true,
     },
     onStartTheGame: {

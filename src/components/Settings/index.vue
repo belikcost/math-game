@@ -5,19 +5,19 @@
       type="range"
       min="1"
       max="15"
-      :value="settings.duration"
+      :value="settingsStore.settings.duration"
       @input="onChangeDuration"
     />
-    <span>Длительность {{ settings.duration }} минут.</span>
+    <span>Длительность {{ settingsStore.settings.duration }} минут.</span>
 
     <input
       type="range"
       min="1"
       max="5"
-      :value="settings.level"
+      :value="settingsStore.settings.level"
       @input="onChangeLevel"
     />
-    <span>Сложность {{ settings.level }}.</span>
+    <span>Сложность {{ settingsStore.settings.level }}.</span>
 
     <div
       class="settings_label"
@@ -29,8 +29,8 @@
       </span>
       <input
         type="checkbox"
-        :checked="checkOperationChoose(operationType)"
-        @change="(e) => onChooseOperation(e.target.checked, operationType)"
+        :checked="settingsStore.checkOperationChoose(operationType)"
+        @change="(e) => onChooseOperations(e, operationType)"
       />
     </div>
   </div>
@@ -39,57 +39,37 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { OperationsEnums } from "@/enums";
-import { SettingsInterface } from "@/types";
 import { getOperationByType } from "@/utils";
+import SettingsStore from "@/domain/SettingsStore";
 
 export default defineComponent({
   name: "Settings",
   props: {
-    settings: {
-      type: Object as PropType<SettingsInterface>,
-      required: true,
-    },
-    onChangeSettings: {
-      type: Function as PropType<(settings: SettingsInterface) => void>,
+    settingsStore: {
+      type: Object as PropType<SettingsStore>,
       required: true,
     },
   },
   methods: {
     getOperationByType,
-    checkOperationChoose(operationType: number) {
-      return this.settings.operations.some(
-        (operationFromSettings) => operationFromSettings === operationType
-      );
-    },
-    onChooseOperation(choose: boolean, changedOperationType: number) {
-      let changedOperations = [...this.settings.operations];
+    onChooseOperations(e: Event, operationType: number) {
+      const checked = (e.target as HTMLInputElement).checked;
 
-      if (choose) {
-        changedOperations.push(changedOperationType);
-      } else {
-        changedOperations = changedOperations.filter(
-          (operation) => operation !== changedOperationType
-        );
-      }
-
-      this.onChangeSettings({
-        ...this.settings,
-        operations: changedOperations,
-      });
+      this.settingsStore.chooseOperation(checked, operationType);
     },
     onChangeDuration(e: Event) {
       const duration = +(e.target as HTMLInputElement).value;
 
-      this.onChangeSettings({
-        ...this.settings,
+      this.settingsStore.change({
+        ...this.settingsStore.settings,
         duration,
       });
     },
     onChangeLevel(e: Event) {
       const level = +(e.target as HTMLInputElement).value;
 
-      this.onChangeSettings({
-        ...this.settings,
+      this.settingsStore.change({
+        ...this.settingsStore.settings,
         level,
       });
     },
