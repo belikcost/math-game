@@ -38,8 +38,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { OperationsEnums } from "@/enums";
-import { getOperationByType } from "@/utils";
+import { getOperationByType, OperationsEnums } from "@/enums";
 import SettingsStore from "@/domain/SettingsStore";
 
 export default defineComponent({

@@ -12,7 +12,6 @@ interface TaskFunctionalInterface {
   ) => number;
   checkAnswers: () => boolean;
   getCorrectAnswers: () => number[];
-  getOperationByType: (operationType: OperationsEnums) => string;
 }
 
 class TaskFunctional implements TaskFunctionalInterface {
@@ -122,25 +121,6 @@ class TaskFunctional implements TaskFunctionalInterface {
         return b.type - a.type;
       }
     });
-  }
-
-  getOperationByType(operationType: OperationsEnums): string {
-    switch (operationType) {
-      case OperationsEnums.addition:
-        return "+";
-
-      case OperationsEnums.subtraction:
-        return "-";
-
-      case OperationsEnums.multiplication:
-        return "*";
-
-      case OperationsEnums.division:
-        return "/";
-
-      case OperationsEnums.exponentiation:
-        return "^";
-    }
   }
 }
 

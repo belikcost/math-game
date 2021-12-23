@@ -28,9 +28,10 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { TaskInterface } from "@/types";
-import { getOperationByType } from "@/utils";
 import Operation from "@/components/GameField/Elements/Operation/index.vue";
 import ManageGameField from "@/components/GameField/Elements/ManageGameField/index.vue";
+import TaskFunctional from "@/domain/TaskFunctional";
+import { getOperationByType, OperationsEnums } from "@/enums";
 
 const DEFAULT_FOCUSED_OPERATION = 0;
 

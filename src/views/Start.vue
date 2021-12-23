@@ -35,30 +35,28 @@ export default defineComponent({
   },
   computed: {
     previousResult() {
-      if (this.previousTasks.length !== 0) {
-        const totalTasks = this.previousTasks.length;
-        let solvedTasks = 0;
+      if (this.previousTasks.length === 0) return null;
 
-        this.previousTasks.forEach((task) => {
-          const answersCorrect = task.operations.every(
-            (operation) => operation.value === operation.correctValue
-          );
+      const totalTasks = this.previousTasks.length;
+      let solvedTasks = 0;
 
-          if (answersCorrect) {
-            solvedTasks++;
-          }
-        });
+      this.previousTasks.forEach((task) => {
+        const answersCorrect = task.operations.every(
+          (operation) => operation.value === operation.correctValue
+        );
 
-        const totalPercent = Math.floor((solvedTasks * 100) / totalTasks);
+        if (answersCorrect) {
+          solvedTasks++;
+        }
+      });
 
-        return {
-          solvedTasks,
-          totalTasks,
-          totalPercent,
-        };
-      } else {
-        return null;
-      }
+      const totalPercent = Math.floor((solvedTasks * 100) / totalTasks);
+
+      return {
+        solvedTasks,
+        totalTasks,
+        totalPercent,
+      };
     },
   },
 });
