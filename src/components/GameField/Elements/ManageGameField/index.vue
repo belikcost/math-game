@@ -1,21 +1,28 @@
 <template>
   <div class="manage-game-field">
-    <div
+    <button
       class="manage-game-field_item"
       v-for="(_, index) in arrayFromTenthItems"
       @click="onUpdateFocusOperationValue(index)"
       :key="index"
     >
       {{ index }}
-    </div>
-    <div class="manage-game-field_item" @click="onFocusPrevOperation">&lt;</div>
-    <div class="manage-game-field_item" @click="onFocusNextOperation">&gt;</div>
-    <div class="manage-game-field_item" @click="onShowTaskResultAndResetFocus">
+    </button>
+    <button class="manage-game-field_item" @click="onFocusPrevOperation">
+      &lt;
+    </button>
+    <button class="manage-game-field_item" @click="onFocusNextOperation">
+      &gt;
+    </button>
+    <button
+      class="manage-game-field_item"
+      @click="onShowTaskResultAndResetFocus"
+    >
       =
-    </div>
-    <div class="manage-game-field_item" @click="onShowCorrectTaskAnswers">
+    </button>
+    <button class="manage-game-field_item" @click="onShowCorrectTaskAnswers">
       ?
-    </div>
+    </button>
   </div>
 </template>
 

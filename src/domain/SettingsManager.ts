@@ -1,13 +1,13 @@
 import { SettingsInterface } from "@/types";
 
-interface ISettingsStore {
+interface ISettingsManager {
   settings: SettingsInterface;
   change: (changedSettings: SettingsInterface) => void;
   checkOperationChoose: (operationType: number) => boolean;
   chooseOperation: (choose: boolean, changedOperationType: number) => void;
 }
 
-class SettingsStore implements ISettingsStore {
+class SettingsManager implements ISettingsManager {
   settings: SettingsInterface;
 
   constructor(initialSettings: SettingsInterface) {
@@ -42,4 +42,4 @@ class SettingsStore implements ISettingsStore {
   }
 }
 
-export default SettingsStore;
+export default SettingsManager;

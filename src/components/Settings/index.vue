@@ -38,19 +38,22 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { getOperationByType, OperationsEnums } from "@/enums";
-import SettingsStore from "@/domain/SettingsStore";
+
+import SettingsManager from "@/domain/SettingsManager";
+import TaskFunctional from "@/domain/TaskFunctional";
+
+import { OperationsEnums } from "@/enums";
 
 export default defineComponent({
   name: "Settings",
   props: {
     settingsStore: {
-      type: Object as PropType<SettingsStore>,
+      type: Object as PropType<SettingsManager>,
       required: true,
     },
   },
   methods: {
-    getOperationByType,
+    getOperationByType: TaskFunctional.getOperationByType,
     onChooseOperations(e: Event, operationType: number) {
       const checked = (e.target as HTMLInputElement).checked;
 

@@ -15,15 +15,15 @@
 <script lang="ts">
 import { defineComponent, Ref, ref, watch } from "vue";
 
-import { OperationsEnums } from "@/enums";
-
-import StorageHelper from "@/domain/StorageHelper";
+import StorageHelper from "@/domain/common/StorageHelper";
 import TaskFunctional from "@/domain/TaskFunctional";
-import Timer from "@/domain/Timer";
+import Timer from "@/domain/common/Timer";
+import SettingsManager from "@/domain/SettingsManager";
+
+import { OperationsEnums } from "@/enums";
+import { TaskInterface } from "@/types";
 
 import { getSecondsFromMinutes } from "./utils";
-import SettingsStore from "@/domain/SettingsStore";
-import { TaskInterface } from "@/types";
 
 interface AppStateInterface {
   tasks: TaskInterface[];
@@ -108,8 +108,8 @@ export default defineComponent({
     const settingsFromStorage =
       storageHelper.getFromStorageAndParse("settings");
 
-    const settingsStore: Ref<SettingsStore> = ref(
-      new SettingsStore(settingsFromStorage || INITIAL_SETTINGS)
+    const settingsStore: Ref<SettingsManager> = ref(
+      new SettingsManager(settingsFromStorage || INITIAL_SETTINGS)
     );
 
     watch(

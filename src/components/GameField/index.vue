@@ -27,11 +27,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { TaskInterface } from "@/types";
+
+import TaskFunctional from "@/domain/TaskFunctional";
+
 import Operation from "@/components/GameField/Elements/Operation/index.vue";
 import ManageGameField from "@/components/GameField/Elements/ManageGameField/index.vue";
-import TaskFunctional from "@/domain/TaskFunctional";
-import { getOperationByType, OperationsEnums } from "@/enums";
+
+import { TaskInterface } from "@/types";
 
 const DEFAULT_FOCUSED_OPERATION = 0;
 
@@ -67,7 +69,7 @@ export default defineComponent({
     },
   },
   methods: {
-    getOperationByType,
+    getOperationByType: TaskFunctional.getOperationByType,
     setFocusedOperation(focusedOperation: number) {
       this.$data.focusedOperation = focusedOperation;
     },

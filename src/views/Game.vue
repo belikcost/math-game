@@ -22,11 +22,14 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, watch } from "vue";
-import { TaskInterface } from "@/types";
+
+import TaskFunctional from "@/domain/TaskFunctional";
+
 import GameField from "@/components/GameField/index.vue";
 import Timer from "@/components/Timer/index.vue";
 import Modal from "@/primitives/Modal/index.vue";
-import TaskFunctional from "@/domain/TaskFunctional";
+
+import { TaskInterface } from "@/types";
 
 export default defineComponent({
   name: "Game",
@@ -79,15 +82,12 @@ export default defineComponent({
       this.onChangeCurrentTask({ ...this.currentTask, operations });
     },
     showTaskResult() {
-      let modalText = "";
-
-      if (this.taskFunctional.checkAnswers()) {
-        modalText = "Ответ верный";
-      } else {
-        modalText = "Ответ неверный";
-      }
-
-      this.$data.modal = { active: true, text: modalText };
+      this.$data.modal = {
+        active: true,
+        text: this.taskFunctional.checkAnswers()
+          ? "Ответ верный"
+          : "Ответ неверный",
+      };
     },
     hideModalAndCreateTask() {
       this.$data.modal.active = false;

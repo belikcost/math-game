@@ -8,10 +8,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
+
+import SettingsManager from "@/domain/SettingsManager";
+
 import Greeting from "@/components/Greeting/index.vue";
 import Settings from "@/components/Settings/index.vue";
+
 import { TaskInterface } from "@/types";
-import SettingsStore from "@/domain/SettingsStore";
 
 export default defineComponent({
   name: "Start",
@@ -21,7 +24,7 @@ export default defineComponent({
   },
   props: {
     settingsStore: {
-      type: Object as PropType<SettingsStore>,
+      type: Object as PropType<SettingsManager>,
       required: true,
     },
     onStartTheGame: {

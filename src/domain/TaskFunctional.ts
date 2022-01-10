@@ -95,7 +95,7 @@ class TaskFunctional implements TaskFunctionalInterface {
     level: SettingsInterface["level"]
   ): TaskInterface {
     const task: TaskInterface = {
-      firstNumber: generateRandomValue(Math.random, Math.floor),
+      firstNumber: generateRandomValue(),
       operations: [],
       answer: null,
     };
@@ -104,7 +104,7 @@ class TaskFunctional implements TaskFunctionalInterface {
       operations.forEach((operation) => {
         task.operations.push({
           type: operation,
-          correctValue: generateRandomValue(Math.random, Math.floor),
+          correctValue: generateRandomValue(),
           value: null,
         });
       });
@@ -115,13 +115,38 @@ class TaskFunctional implements TaskFunctionalInterface {
 
   sortOperationsByLogic(): TaskInterface["operations"] {
     return [...this.task.operations].sort((a, b) => {
-      if ((a.type === 0 || a.type === 1) && (b.type === 0 || b.type === 1)) {
+      const itemsTypeAdditionOrSubtraction =
+        (a.type === OperationsEnums.addition ||
+          a.type === OperationsEnums.subtraction) &&
+        (b.type === OperationsEnums.addition ||
+          b.type === OperationsEnums.subtraction);
+
+      if (itemsTypeAdditionOrSubtraction) {
         return 0;
-      } else {
-        return b.type - a.type;
       }
+
+      return b.type - a.type;
     });
   }
+
+  static getOperationByType = (operationType: OperationsEnums): string => {
+    switch (operationType) {
+      case OperationsEnums.addition:
+        return "+";
+
+      case OperationsEnums.subtraction:
+        return "-";
+
+      case OperationsEnums.multiplication:
+        return "*";
+
+      case OperationsEnums.division:
+        return "/";
+
+      case OperationsEnums.exponentiation:
+        return "^";
+    }
+  };
 }
 
 export default TaskFunctional;

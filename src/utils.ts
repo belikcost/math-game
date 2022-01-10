@@ -1,8 +1,5 @@
-const generateRandomValue = (
-  randomizeFunction: () => number,
-  floorFunction: (arg0: number) => number
-): number => {
-  return floorFunction(randomizeFunction() * 100);
+const generateRandomValue = (): number => {
+  return Math.floor(Math.random() * 100);
 };
 
 const getSecondsFromMinutes = (minutes: number): number => {
